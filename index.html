@@ -1,0 +1,579 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #f9f9f9;
+    font-family: system-ui, -apple-system, sans-serif;
+    color: #1a1a1a;
+    line-height: 1.5;
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: 240px;
+    background: #1e293b;
+    color: #cbd5e1;
+    padding: 20px 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    overflow-y: auto;
+  }
+
+  .sidebar-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: white;
+    padding: 0 16px 16px;
+    border-bottom: 1px solid #334155;
+    margin-bottom: 8px;
+  }
+
+  .sidebar-subtitle {
+    font-size: 11px;
+    color: #64748b;
+    padding: 0 16px 12px;
+  }
+
+  .sidebar a {
+    display: block;
+    padding: 8px 16px;
+    font-size: 13px;
+    color: #94a3b8;
+    text-decoration: none;
+    border-left: 3px solid transparent;
+    transition: all 0.15s ease;
+  }
+
+  .sidebar a:hover {
+    background: #334155;
+    color: white;
+    border-left-color: #3b82f6;
+  }
+
+  .sidebar .divider {
+    height: 1px;
+    background: #334155;
+    margin: 8px 16px;
+  }
+
+  /* MAIN CONTENT */
+  .main {
+    margin-left: 240px;
+    padding: 24px 32px;
+    flex: 1;
+    max-width: 960px;
+  }
+
+  .page-header {
+    margin-bottom: 32px;
+  }
+
+  .page-header h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: #1e293b;
+  }
+
+  .page-header p {
+    font-size: 13px;
+    color: #64748b;
+    margin-top: 4px;
+  }
+
+  .breadcrumb {
+    font-size: 12px;
+    color: #94a3b8;
+    margin-bottom: 8px;
+  }
+
+  /* SECTIONS */
+  .section {
+    margin-bottom: 32px;
+    scroll-margin-top: 16px;
+  }
+
+  .section-header {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1e293b;
+    padding: 10px 0;
+    border-bottom: 2px solid #e2e8f0;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 700;
+    color: white;
+    background: #1e293b;
+    flex-shrink: 0;
+  }
+
+  /* TABLES */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  th {
+    text-align: left;
+    color: #475569;
+    font-weight: 600;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 10px 14px;
+    background: #f8fafc;
+    border-bottom: 2px solid #e2e8f0;
+  }
+
+  td {
+    padding: 10px 14px;
+    color: #334155;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: top;
+  }
+
+  tr:hover td { background: #f8fafc; }
+
+  /* ANSWER CARDS */
+  .answer-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+
+  .answer-box {
+    flex: 1;
+    min-width: 200px;
+    padding: 14px;
+    border-radius: 8px;
+    border-left: 4px solid;
+    background: white;
+    border-top: 1px solid #e2e8f0;
+    border-right: 1px solid #e2e8f0;
+    border-bottom: 1px solid #e2e8f0;
+  }
+
+  .answer-box.yes { border-left-color: #22c55e; }
+  .answer-box.no { border-left-color: #ef4444; }
+  .answer-box.ns { border-left-color: #f59e0b; }
+  .answer-box.flag { border-left-color: #e11d48; }
+
+  .answer-box .label {
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .answer-box.yes .label { color: #22c55e; }
+  .answer-box.no .label { color: #ef4444; }
+  .answer-box.ns .label { color: #f59e0b; }
+  .answer-box.flag .label { color: #e11d48; }
+
+  .answer-box p { font-size: 13px; color: #475569; }
+  .answer-box .check { font-size: 12px; color: #64748b; font-style: italic; margin-top: 6px; }
+
+  /* TAGS */
+  .tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 3px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  .tag.req { background: #fef2f2; color: #dc2626; }
+  .tag.opt { background: #f0fdf4; color: #15803d; }
+  .tag.none { background: #f1f5f9; color: #64748b; }
+
+  /* REASON NUMBERS */
+  .rn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: 700;
+    color: white;
+    flex-shrink: 0;
+  }
+
+  .rn.r { background: #ef4444; }
+  .rn.a { background: #f59e0b; }
+
+  /* CALLOUT */
+  .callout {
+    padding: 12px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    margin-top: 12px;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .callout.info { background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; }
+  .callout.warn { background: #fffbeb; border: 1px solid #fde68a; color: #92400e; }
+
+  /* COMMENT PAIR */
+  .comment-pair {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+
+  .comment-bad, .comment-good {
+    flex: 1;
+    padding: 10px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+  }
+
+  .comment-bad {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+  }
+
+  .comment-good {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+  }
+
+  .comment-bad .cl { color: #dc2626; font-weight: 700; font-size: 11px; text-transform: uppercase; }
+  .comment-good .cl { color: #15803d; font-weight: 700; font-size: 11px; text-transform: uppercase; }
+
+  .comment-text { color: #334155; margin-top: 4px; }
+  .comment-why { color: #64748b; font-size: 12px; margin-top: 2px; font-style: italic; }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sidebar-title">RW Annotations</div>
+  <div class="sidebar-subtitle">Quick Reference Cheat Sheet</div>
+  <a href="#s1">1. Which Answer</a>
+  <a href="#s2">2. No Reasons</a>
+  <a href="#s3">3. Not Sure Reasons</a>
+  <a href="#s4">4. Easy to Mix Up</a>
+  <a href="#s5">5. Special Question Types</a>
+  <a href="#s6">6. Comments That Help</a>
+  <div class="divider"></div>
+  <a href="#s1" style="font-size:11px; color:#64748b;">Back to top</a>
+</nav>
+
+<!-- MAIN CONTENT -->
+<div class="main">
+
+  <div class="page-header">
+    <div class="breadcrumb">Micro1 › RW Annotations › Quick Reference</div>
+    <h1>Quick Reference Cheat Sheet</h1>
+    <p>Use this while you work. The guide explains the rules; this sheet shows how to apply them.</p>
+  </div>
+
+  <!-- 1. WHICH ANSWER -->
+  <div class="section" id="s1">
+    <div class="section-header"><span class="section-num">1</span> Which Answer?</div>
+    <div class="answer-row">
+      <div class="answer-box yes">
+        <div class="label">YES</div>
+        <p>The clip clearly matches the statement.</p>
+        <p class="check">Would you bet on it after one more replay?</p>
+      </div>
+      <div class="answer-box no">
+        <div class="label">NO + reason</div>
+        <p>You can point to what actually happens instead.</p>
+        <p class="check">Can you finish "No, because actually..."?</p>
+      </div>
+    </div>
+    <div class="answer-row">
+      <div class="answer-box ns">
+        <div class="label">NOT SURE + reason</div>
+        <p>"I don't think so, but I can't really tell."</p>
+        <p class="check">A hunch is not proof. If you can't point to it, it isn't a No.</p>
+      </div>
+      <div class="answer-box flag">
+        <div class="label">FLAG</div>
+        <p>Clip is broken, black, silent, or the wrong clip.</p>
+        <p class="check">Never answer Yes / No / Not sure on a broken clip.</p>
+      </div>
+    </div>
+    <div class="callout info">
+      <span>🔎</span>
+      <span><strong>Named entities only:</strong> "Is this Tom Hanks?" or "Is this an Audi R8?" Image search the name, compare, move on after 1 min. This is the only place research is allowed.</span>
+    </div>
+    <div class="callout warn">
+      <span>🧠</span>
+      <span><strong>Specialist knowledge:</strong> Not sure → 3, no research. That's the answer we want. It tells us the question needs different support.</span>
+    </div>
+  </div>
+
+  <!-- 2. NO REASONS -->
+  <div class="section" id="s2">
+    <div class="section-header"><span class="section-num">2</span> Reasons for "No"</div>
+    <table>
+      <tr>
+        <th style="width:30px">#</th>
+        <th>Reason</th>
+        <th>When to Use</th>
+        <th>Example</th>
+        <th>Comment</th>
+        <th>Good Comment</th>
+      </tr>
+      <tr>
+        <td><span class="rn r">1</span></td>
+        <td><strong>Wrong place or direction</strong></td>
+        <td>The thing is there, but position or movement is wrong</td>
+        <td>"Car drives toward the camera", but it's driving away</td>
+        <td><span class="tag opt">Optional</span></td>
+        <td>"Car is moving away from the camera."</td>
+      </tr>
+      <tr>
+        <td><span class="rn r">2</span></td>
+        <td><strong>It doesn't happen in the video</strong></td>
+        <td>The event or action is simply not there</td>
+        <td>"Child blows out candles", but there's no cake or candles</td>
+        <td><span class="tag none">Not expected</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="rn r">3</span></td>
+        <td><strong>It happens, but the description is off</strong></td>
+        <td>You can see the real detail and it contradicts the claim</td>
+        <td>"Orchestral" but it's electronic synth; "two people" but you count five</td>
+        <td><span class="tag req">Required</span></td>
+        <td>"Music is electronic synth, not orchestral."</td>
+      </tr>
+      <tr>
+        <td><span class="rn r">4</span></td>
+        <td><strong>Something else is wrong</strong></td>
+        <td>Clearly wrong but 1-3 don't fit</td>
+        <td>"Dog barks, then door opens", but door opens first</td>
+        <td><span class="tag req">Required</span></td>
+        <td>"Order reversed: door opens before bark."</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- 3. NOT SURE REASONS -->
+  <div class="section" id="s3">
+    <div class="section-header"><span class="section-num">3</span> Reasons for "Not Sure"</div>
+    <table>
+      <tr>
+        <th style="width:30px">#</th>
+        <th>Reason</th>
+        <th>When to Use</th>
+        <th>Example</th>
+        <th>Comment</th>
+        <th>Good Comment</th>
+      </tr>
+      <tr>
+        <td><span class="rn a">1</span></td>
+        <td><strong>I can't see or hear well enough</strong></td>
+        <td>Clip too short, dark, blurry, blocked, or too quiet</td>
+        <td>Person holds something, but it's too blurry to tell what</td>
+        <td><span class="tag opt">Optional</span></td>
+        <td>"Clip ends before the action finishes."</td>
+      </tr>
+      <tr>
+        <td><span class="rn a">2</span></td>
+        <td><strong>Question doesn't fit this clip</strong></td>
+        <td>The claim is confused or refers to something not there to judge</td>
+        <td>"Second speaker disagrees", but clip is a silent landscape</td>
+        <td><span class="tag req">Required</span></td>
+        <td>"Claim mentions speakers; clip has no people or speech."</td>
+      </tr>
+      <tr>
+        <td><span class="rn a">3</span></td>
+        <td><strong>I can see/hear clearly, but still can't tell</strong></td>
+        <td>Clip is fine; borderline case or knowledge gap</td>
+        <td>Bird in sharp focus, but can't tell if it's a kingfisher</td>
+        <td><span class="tag opt">Optional</span></td>
+        <td>"Clear view, but I can't identify the bird species."</td>
+      </tr>
+      <tr>
+        <td><span class="rn a">4</span></td>
+        <td><strong>Something else</strong></td>
+        <td>You're unsure and 1-3 don't fit</td>
+        <td>Clip has two scenes; unclear which one the claim means</td>
+        <td><span class="tag req">Required</span></td>
+        <td>"Two scenes in clip; claim could refer to either."</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- 4. EASY TO MIX UP -->
+  <div class="section" id="s4">
+    <div class="section-header"><span class="section-num">4</span> Easy to Mix Up</div>
+    <table>
+      <tr>
+        <th>Torn Between</th>
+        <th>Pick</th>
+        <th>How to Decide</th>
+      </tr>
+      <tr>
+        <td><strong>No 3 vs Not sure 1</strong></td>
+        <td>Not sure 1</td>
+        <td>Unless you can positively identify the real detail. Something in hand but can't tell what → NS1. Clearly a spoon, not fork → No 3.</td>
+      </tr>
+      <tr>
+        <td><strong>Not sure 1 vs Not sure 3</strong></td>
+        <td>Ask: clip or me?</td>
+        <td>Blurry, dark or quiet clip → 1. Clear clip, but you lack knowledge → 3.</td>
+      </tr>
+      <tr>
+        <td><strong>No 2 vs Not sure 2</strong></td>
+        <td>Does statement fit?</td>
+        <td>Makes sense, just didn't happen → No 2. Doesn't make sense to judge → NS 2.</td>
+      </tr>
+      <tr>
+        <td><strong>No 1 vs No 3</strong></td>
+        <td>Position or not?</td>
+        <td>Left/right, toward/away, above/below → No 1. Color, count, sound, type → No 3.</td>
+      </tr>
+      <tr>
+        <td><strong>Not sure 1 vs 🚩 Flag</strong></td>
+        <td>Clip usable?</td>
+        <td>Watchable but detail is hard → NS 1. Black, frozen, silent or wrong → Flag.</td>
+      </tr>
+      <tr>
+        <td><strong>Research or not?</strong></td>
+        <td>Named entity only</td>
+        <td>"Is this Homer Simpson?" → search. "Is this a santoku knife?" → no search.</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- 5. SPECIAL QUESTION TYPES -->
+  <div class="section" id="s5">
+    <div class="section-header"><span class="section-num">5</span> Special Question Types</div>
+    <div class="callout info" style="margin-top:0; margin-bottom:16px;">
+      <span>🔎</span>
+      <span><strong>Named-entity questions</strong> are the only place research is allowed. Image search the name and compare to screen. Max 1 minute.</span>
+    </div>
+    <table>
+      <tr>
+        <th>Situation</th>
+        <th>Example</th>
+        <th>Answer</th>
+        <th>Why</th>
+      </tr>
+      <tr>
+        <td>Clear match</td>
+        <td>"Is this Homer Simpson?" Bald, yellow, white shirt, blue trousers</td>
+        <td><strong style="color:#22c55e">Yes</strong></td>
+        <td>Matches the known look</td>
+      </tr>
+      <tr>
+        <td>Clearly not a match</td>
+        <td>"Is this Tom Hanks?" Very different age and build</td>
+        <td><strong style="color:#ef4444">No</strong></td>
+        <td>Obviously a different person</td>
+      </tr>
+      <tr>
+        <td>Clip doesn't show enough</td>
+        <td>"Is this Homer Simpson?" Blurry yellow shape from behind</td>
+        <td><strong style="color:#f59e0b">NS → 1</strong></td>
+        <td>Clip is the problem: blurry, dark, face turned away</td>
+      </tr>
+      <tr>
+        <td>Clear but not confident</td>
+        <td>"Is this Tom Hanks?" Looks similar, could be a lookalike</td>
+        <td><strong style="color:#f59e0b">NS → 3</strong></td>
+        <td>Don't guess, people vary at telling faces apart</td>
+      </tr>
+      <tr>
+        <td>Specialist knowledge</td>
+        <td>"Is the undercarriage visibly torn open?"</td>
+        <td><strong style="color:#f59e0b">NS → 3</strong></td>
+        <td>No research. Knowledge gap is the answer we want.</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- 6. COMMENTS THAT HELP -->
+  <div class="section" id="s6">
+    <div class="section-header"><span class="section-num">6</span> Comments That Help</div>
+    <div class="callout warn" style="margin-top:0; margin-bottom:16px;">
+      <span>⚠️</span>
+      <span><strong>Required comment reasons:</strong> No 3, No 4, Not sure 2, Not sure 4. Write the comment before pressing Enter.</span>
+    </div>
+    <div class="comment-pair">
+      <div class="comment-bad">
+        <div class="cl">❌ Not helpful</div>
+        <div class="comment-text">"Wrong"</div>
+      </div>
+      <div class="comment-good">
+        <div class="cl">✅ Helpful</div>
+        <div class="comment-text">"Ball is blue, not red."</div>
+        <div class="comment-why">Says what's actually there</div>
+      </div>
+    </div>
+    <div class="comment-pair">
+      <div class="comment-bad">
+        <div class="cl">❌ Not helpful</div>
+        <div class="comment-text">"See clip"</div>
+      </div>
+      <div class="comment-good">
+        <div class="cl">✅ Helpful</div>
+        <div class="comment-text">"I count 4 people, not 2."</div>
+        <div class="comment-why">Reviewers can check in seconds</div>
+      </div>
+    </div>
+    <div class="comment-pair">
+      <div class="comment-bad">
+        <div class="cl">❌ Not helpful</div>
+        <div class="comment-text">"Weird question"</div>
+      </div>
+      <div class="comment-good">
+        <div class="cl">✅ Helpful</div>
+        <div class="comment-text">"Claim refers to an article; this is a video."</div>
+        <div class="comment-why">Explains what's off about the question</div>
+      </div>
+    </div>
+    <div class="comment-pair">
+      <div class="comment-bad">
+        <div class="cl">❌ Not helpful</div>
+        <div class="comment-text">"Other"</div>
+      </div>
+      <div class="comment-good">
+        <div class="cl">✅ Helpful</div>
+        <div class="comment-text">"Events happen in reverse order."</div>
+        <div class="comment-why">Required reasons need actionable info</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
